@@ -34,7 +34,7 @@ import {
   Pie,
   PieChart,
   ResponsiveContainer,
-  Sector, // Import Sector for the active shape
+  Sector,
   XAxis,
   YAxis,
 } from "recharts";
@@ -45,7 +45,6 @@ export default function AnalyticsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>("");
 
-  // State to track the active (hovered) segment of the pie chart
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
   useEffect(() => {
@@ -182,9 +181,7 @@ export default function AnalyticsPage() {
                   <YAxis
                     tickLine={false}
                     axisLine={false}
-                    tickFormatter={(value: number | string) =>
-                      `$${Number(value) / 1000}k`
-                    }
+                    tickFormatter={(value: number) => `$${value / 1000}k`}
                   />
                   <ChartTooltip content={<ChartTooltipContent />} />
                   <Bar
@@ -234,9 +231,21 @@ export default function AnalyticsPage() {
                     outerRadius={80}
                     paddingAngle={5}
                     activeIndex={activeIndex ?? undefined}
-                    onMouseEnter={(_, index) => setActiveIndex(index)}
+                    // FIX: Added explicit types for the function parameters
+                    onMouseEnter={(_: object, index: number) =>
+                      setActiveIndex(index)
+                    }
                     onMouseLeave={() => setActiveIndex(null)}
-                    activeShape={(props) => {
+                    activeShape={(props: {
+                      cx: number;
+                      cy: number;
+                      innerRadius: number;
+                      outerRadius: number;
+                      startAngle: number;
+                      endAngle: number;
+                      fill: string;
+                    }) => {
+                      // Type props as any to resolve type issues
                       const {
                         cx,
                         cy,
@@ -252,7 +261,7 @@ export default function AnalyticsPage() {
                             cx={cx}
                             cy={cy}
                             innerRadius={innerRadius}
-                            outerRadius={(outerRadius ?? 0) + 4} // Expands the segment on hover
+                            outerRadius={(outerRadius ?? 0) + 4}
                             startAngle={startAngle}
                             endAngle={endAngle}
                             fill={fill}
@@ -260,9 +269,7 @@ export default function AnalyticsPage() {
                         </g>
                       );
                     }}
-                  >
-                    {/* The LabelList component has been removed */}
-                  </Pie>
+                  />
                 </PieChart>
               </ResponsiveContainer>
             </ChartContainer>
