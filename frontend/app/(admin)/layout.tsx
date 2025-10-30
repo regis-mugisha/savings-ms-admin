@@ -1,7 +1,5 @@
 "use client";
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
 import {
   Sidebar,
   SidebarContent,
@@ -15,10 +13,17 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { LayoutDashboard, Users, Receipt, LogOut } from "lucide-react";
+import { clearAdmin, clearToken, getToken } from "@/lib/api";
+import {
+  BarChart3,
+  LayoutDashboard,
+  LogOut,
+  Receipt,
+  Users,
+} from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { getToken, clearToken, clearAdmin } from "@/lib/api";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 const menuItems = [
   {
@@ -35,6 +40,11 @@ const menuItems = [
     title: "Transactions",
     url: "/transactions",
     icon: Receipt,
+  },
+  {
+    title: "Analytics",
+    url: "/analytics",
+    icon: BarChart3,
   },
 ];
 
@@ -59,11 +69,15 @@ export default function DashboardLayout({
         <Sidebar className="border-r">
           <SidebarContent>
             <SidebarGroup>
-              <SidebarGroupLabel className="px-6 py-4">
-                <span className="text-base font-semibold">Savings Admin</span>
+              <SidebarGroupLabel className="px-6 py-6 border-b hover:bg-muted/50 transition-colors cursor-pointer">
+                <Link href="/dashboard" className="block">
+                  <span className="text-base font-semibold tracking-tight">
+                    Savings Admin
+                  </span>
+                </Link>
               </SidebarGroupLabel>
               <SidebarGroupContent>
-                <SidebarMenu className="px-2 space-y-1">
+                <SidebarMenu className="px-2 space-y-2 mt-4">
                   {menuItems.map((item) => {
                     const Icon = item.icon;
                     const isActive =
@@ -73,14 +87,26 @@ export default function DashboardLayout({
                         <SidebarMenuButton
                           asChild
                           isActive={isActive}
-                          className="pl-4 pr-3"
+                          className={`pl-4 pr-3 rounded-md transition-all duration-200 ${
+                            isActive
+                              ? "bg-muted border border-border shadow-sm"
+                              : "hover:bg-accent hover:text-accent-foreground  hover:shadow-sm hover:scale-[1.02]"
+                          }`}
                         >
                           <Link
                             href={item.url}
-                            className="w-full flex items-center gap-3"
+                            className="w-full flex items-center gap-3 py-2.5 group"
                           >
-                            <Icon />
-                            <span>{item.title}</span>
+                            <Icon
+                              className={`transition-colors ${
+                                isActive
+                                  ? "text-primary"
+                                  : "group-hover:text-primary/80"
+                              }`}
+                            />
+                            <span className="group-hover:text-foreground/90">
+                              {item.title}
+                            </span>
                           </Link>
                         </SidebarMenuButton>
                       </SidebarMenuItem>
@@ -89,22 +115,24 @@ export default function DashboardLayout({
                 </SidebarMenu>
               </SidebarGroupContent>
             </SidebarGroup>
-            <SidebarFooter className="mt-auto">
-              <SidebarMenu>
-                <SidebarMenuItem>
-                  <SidebarMenuButton
-                    onClick={() => {
-                      clearToken();
-                      clearAdmin();
-                      router.push("/");
-                    }}
-                    className="justify-center"
-                  >
-                    <LogOut />
-                    <span>Logout</span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              </SidebarMenu>
+            <SidebarFooter className="mt-auto mb-4">
+              <div className="px-2 pt-4 border-t mx-4">
+                <SidebarMenu>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton
+                      onClick={() => {
+                        clearToken();
+                        clearAdmin();
+                        router.push("/");
+                      }}
+                      className="w-full flex items-center gap-3 py-2.5 px-4 rounded-md bg-destructive/10 hover:bg-destructive/20 text-destructive hover:text-destructive/90 transition-all duration-200"
+                    >
+                      <LogOut />
+                      <span>Logout</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                </SidebarMenu>
+              </div>
             </SidebarFooter>
           </SidebarContent>
         </Sidebar>

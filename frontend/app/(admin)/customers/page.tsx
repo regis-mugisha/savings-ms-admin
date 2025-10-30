@@ -1,9 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -12,6 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -20,13 +19,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  getUsers,
-  verifyUserDevice,
-  type User,
-  type UserDetailResponse,
-} from "@/lib/api";
-import { Search, Eye, CheckCircle, XCircle, Loader2 } from "lucide-react";
+import { getUsers, verifyUserDevice, type User } from "@/lib/api";
+import { CheckCircle, Eye, Loader2, Search, XCircle } from "lucide-react";
+import { useEffect, useState } from "react";
 
 export default function CustomersPage() {
   const [users, setUsers] = useState<User[]>([]);
@@ -151,11 +146,13 @@ export default function CustomersPage() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-[28%]">Full Name</TableHead>
-                  <TableHead className="w-[32%]">Email</TableHead>
-                  <TableHead className="text-right w-[15%]">Balance</TableHead>
-                  <TableHead className="w-[15%]">Verification Status</TableHead>
-                  <TableHead className="text-right w-[10%]">Actions</TableHead>
+                  <TableHead className="pl-7">Full Name</TableHead>
+                  <TableHead>Email</TableHead>
+                  <TableHead>Balance</TableHead>
+                  <TableHead className="text-center">
+                    Verification Status
+                  </TableHead>
+                  <TableHead className="text-center">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -169,18 +166,18 @@ export default function CustomersPage() {
                   )
                   .map((user) => (
                     <TableRow key={user._id} className="hover:bg-muted/50">
-                      <TableCell className="font-medium">
+                      <TableCell className="pl-7 font-medium">
                         {user.fullName}
                       </TableCell>
                       <TableCell>{user.email}</TableCell>
-                      <TableCell className="text-right">
+                      <TableCell>
                         $
                         {user.balance.toLocaleString("en-US", {
                           minimumFractionDigits: 2,
                           maximumFractionDigits: 2,
                         })}
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="flex items-center justify-center">
                         <Badge
                           variant={
                             user.deviceVerified ? "default" : "destructive"
@@ -200,7 +197,7 @@ export default function CustomersPage() {
                           )}
                         </Badge>
                       </TableCell>
-                      <TableCell className="text-right">
+                      <TableCell className="text-center">
                         {!user.deviceVerified && (
                           <Button
                             variant="outline"
@@ -219,7 +216,25 @@ export default function CustomersPage() {
 
             <div className="flex items-center justify-between p-4 border-t">
               <p className="text-sm text-muted-foreground">
-                Showing {users.length} of {total} users
+                Showing{" "}
+                {
+                  users.filter((u) =>
+                    statusFilter === "all"
+                      ? true
+                      : statusFilter === "verified"
+                      ? u.deviceVerified
+                      : !u.deviceVerified
+                  ).length
+                }{" "}
+                of{" "}
+                {statusFilter === "all"
+                  ? total
+                  : users.filter((u) =>
+                      statusFilter === "verified"
+                        ? u.deviceVerified
+                        : !u.deviceVerified
+                    ).length}{" "}
+                users {statusFilter !== "all" && `(${statusFilter})`}
               </p>
               <div className="flex gap-2">
                 <Button

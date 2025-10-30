@@ -1,8 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -12,7 +11,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { getTransactions, type Transaction } from "@/lib/api";
-import { ArrowUpCircle, ArrowDownCircle, Loader2 } from "lucide-react";
+import { ArrowDownCircle, ArrowUpCircle, Loader2 } from "lucide-react";
+import { useEffect, useState } from "react";
 
 export default function TransactionsPage() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -97,13 +97,11 @@ export default function TransactionsPage() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-[18%]">Date</TableHead>
-                  <TableHead className="w-[26%]">Customer</TableHead>
-                  <TableHead className="w-[14%]">Type</TableHead>
-                  <TableHead className="text-right w-[14%]">Amount</TableHead>
-                  <TableHead className="text-right w-[14%]">
-                    Balance After
-                  </TableHead>
+                  <TableHead className="w-[20%] pl-7">Date</TableHead>
+                  <TableHead className="w-[20%]">Customer</TableHead>
+                  <TableHead className="w-[14%] text-center">Type</TableHead>
+                  <TableHead className="w-[14%]">Amount</TableHead>
+                  <TableHead className="w-[14%]">Balance After</TableHead>
                   <TableHead className="w-[24%]">Description</TableHead>
                 </TableRow>
               </TableHeader>
@@ -115,9 +113,9 @@ export default function TransactionsPage() {
                   .map((transaction) => (
                     <TableRow
                       key={transaction._id}
-                      className="hover:bg-muted/50"
+                      className="hover:bg-muted/50 min-h-12"
                     >
-                      <TableCell>
+                      <TableCell className="pl-7">
                         {new Date(transaction.createdAt).toLocaleString()}
                       </TableCell>
                       <TableCell>
@@ -130,7 +128,7 @@ export default function TransactionsPage() {
                           </p>
                         </div>
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="flex items-center justify-center">
                         <Badge
                           variant={
                             transaction.type === "deposit"
@@ -152,14 +150,14 @@ export default function TransactionsPage() {
                           )}
                         </Badge>
                       </TableCell>
-                      <TableCell className="text-right font-medium">
+                      <TableCell className="font-medium">
                         $
                         {transaction.amount.toLocaleString("en-US", {
                           minimumFractionDigits: 2,
                           maximumFractionDigits: 2,
                         })}
                       </TableCell>
-                      <TableCell className="text-right">
+                      <TableCell>
                         $
                         {transaction.balanceAfter.toLocaleString("en-US", {
                           minimumFractionDigits: 2,
@@ -176,7 +174,18 @@ export default function TransactionsPage() {
 
             <div className="flex items-center justify-between p-4 border-t">
               <p className="text-sm text-muted-foreground">
-                Showing {transactions.length} of {total} transactions
+                Showing{" "}
+                {
+                  transactions.filter((t) =>
+                    typeFilter === "all" ? true : t.type === typeFilter
+                  ).length
+                }{" "}
+                of{" "}
+                {typeFilter === "all"
+                  ? total
+                  : transactions.filter((t) => t.type === typeFilter)
+                      .length}{" "}
+                transactions {typeFilter !== "all" && `(${typeFilter}s)`}
               </p>
               <div className="flex gap-2">
                 <Button
