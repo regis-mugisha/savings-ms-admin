@@ -12,7 +12,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { login, storeToken } from "@/lib/api";
+import { login, storeToken, storeAdmin } from "@/lib/api";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -29,6 +29,7 @@ export default function LoginPage() {
     try {
       const response = await login({ email, password });
       storeToken(response.accessToken);
+      storeAdmin(response.admin);
       router.push("/dashboard");
     } catch (err) {
       setError(
