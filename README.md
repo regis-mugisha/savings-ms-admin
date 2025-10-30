@@ -68,13 +68,7 @@ frontend/
    yarn install
    ```
 
-3. Create a `.env.local` file in the frontend directory:
-
-   ```env
-   NEXT_PUBLIC_API_URL=your_backend_api_url
-   ```
-
-4. Start the development server:
+3. Start the development server:
 
    ```bash
    npm run dev
@@ -82,13 +76,7 @@ frontend/
    yarn dev
    ```
 
-5. Open [http://localhost:3000](http://localhost:3000) in your browser
-
-## 🔒 Environment Variables
-
-Required environment variables:
-
-- `NEXT_PUBLIC_API_URL`: Backend API URL
+4. Open [http://localhost:3000](http://localhost:3000) in your browser
 
 ## 🛣️ Routes
 
