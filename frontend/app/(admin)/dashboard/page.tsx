@@ -1,26 +1,26 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  getDashboardStats,
-  type DashboardStats,
-  getAdmin,
-  getTransactions,
-  type TransactionsResponse,
-  getUsers,
-  type UsersResponse,
-  verifyUserDevice,
-  getUser,
-} from "@/lib/api";
-import { Users, UserCheck, UserX, Receipt, CheckCircle } from "lucide-react";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+import {
+  type DashboardStats,
+  getAdmin,
+  getDashboardStats,
+  getTransactions,
+  getUser,
+  getUsers,
+  type TransactionsResponse,
+  type UsersResponse,
+  verifyUserDevice,
+} from "@/lib/api";
+import { CheckCircle, Receipt, UserCheck, Users, UserX } from "lucide-react";
+import { useEffect, useState } from "react";
 
 export default function DashboardPage() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
@@ -252,9 +252,7 @@ export default function DashboardPage() {
                 <thead>
                   <tr className="text-left text-muted-foreground">
                     <th className="py-2">Name</th>
-                    <th className="py-2">Email</th>
                     <th className="py-2">Device ID</th>
-                    <th className="py-2">Created</th>
                     <th className="py-2">Action</th>
                   </tr>
                 </thead>
@@ -262,11 +260,7 @@ export default function DashboardPage() {
                   {(pendingUsers?.users ?? []).slice(0, 6).map((u) => (
                     <tr key={u._id} className="border-b last:border-0">
                       <td className="py-2">{u.fullName}</td>
-                      <td className="py-2">{u.email}</td>
                       <td className="py-2">{u.deviceId}</td>
-                      <td className="py-2">
-                        {new Date(u.createdAt).toLocaleDateString()}
-                      </td>
                       <td className="py-2">
                         <Button size="sm" onClick={() => openReview(u._id)}>
                           Review
